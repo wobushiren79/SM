@@ -1,0 +1,92 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(.claude/**)",
+      "Write(.claude/skills/**)",
+      "Edit(.claude/skills/**)",
+      "Write(.claude/agents/**)",
+      "Edit(.claude/agents/**)",
+      "Write(.claude/scripts/**)",
+      "Edit(.claude/scripts/**)",
+      "Write(.claude/memory/**)",
+      "Edit(.claude/memory/**)",
+      "Read(**/.claude/**)",
+      "Write(**/.claude/**)",
+      "Edit(**/.claude/**)",
+      "Read(**/*.py)",
+      "Write(**/*.py)",
+      "Edit(**/*.py)",
+      "Read(**/*.md)",
+      "Write(**/*.md)",
+      "Edit(**/*.md)",
+      "Read(**/*.ps1)",
+      "Write(**/*.ps1)",
+      "Edit(**/*.ps1)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/*\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/check-unity-mcp.ps1\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/check-cs-changed.ps1\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/check-watched.ps1\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/run-python.ps1\" *)",
+      "PowerShell(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/run-python.ps1\" *)",
+      "Bash(powerShell.exe -NoProfile -Command *)",
+      "PowerShell(*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/load-memory.ps1\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "(?i)(MCP|连接.*[Uu]nity|[Uu]nity.*连接|Start Session|HTTP server|uvx|Window.*MCP)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/check-unity-mcp.ps1\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/block-unity-assets.ps1\"",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/block-bean-edits.ps1\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \".claude/scripts/check-cs-changed.ps1\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "claude-code-setup@claude-plugins-official": true
+  }
+}
