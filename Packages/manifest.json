@@ -31,7 +31,6 @@
     "com.unity.ugui": "2.0.0",
     "com.unity.visualeffectgraph": "17.3.0",
     "com.unity.visualscripting": "1.9.10",
-    "jillejr.newtonsoft.json-for-unity": "13.0.102",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
@@ -68,13 +67,6 @@
     "com.unity.modules.xr": "1.0.0"
   },
   "scopedRegistries": [
-    {
-      "name": "jilleJr",
-      "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity",
-      "scopes": [
-        "jillejr.newtonsoft.json-for-unity"
-      ]
-    },
     {
       "name": "Keijiro",
       "url": "https://registry.npmjs.com",
