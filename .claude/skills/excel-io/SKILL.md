@@ -31,7 +31,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 ## 配置表目录
 
 ```
-Assets/Data/Excel/                   # 原始 Excel 配置表（31张）
+Assets/Data/Excel/                   # 原始 Excel 配置表
 Assets/Resources/JsonText/           # 导出的 JSON 文本（由编辑器工具生成）
 ```
 
@@ -46,8 +46,8 @@ Assets/Resources/JsonText/           # 导出的 JSON 文本（由编辑器工�
 | `.claude/scripts/excel_write.py` | 修改已有单元格 | 支持按行列、按 ID 单列、按 ID 多列三种模式 |
 | `.claude/scripts/excel_delete_row.py` | 删除配置行 | 表头行受保护，支持 `--dry-run` 预览 |
 
-> 所有脚本调用 Python 时若直接 `python` 不可用，请使用绝对路径：
-> `C:\Users\<USER>\AppData\Local\Programs\Python\Python312\python.exe`
+> 下文示例为简洁写作 `python .claude/scripts/...`；实际执行时一律通过包装脚本（裸 `python` 不一定在 PATH，且写死 python.exe 绝对路径违反 CLAUDE.md「Python 执行规则」）：
+> `powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".claude/scripts/run-python.ps1" .claude/scripts/excel_xxx.py [参数...]`
 
 ## 1. 查看表结构 (excel_schema.py)
 
@@ -146,46 +146,18 @@ python .claude/scripts/excel_delete_row.py \
   --id 1001 --backup
 ```
 
-## 配置表速查（文件名 → Sheet名）
+## 配置表速查
 
-| 中文名 | 文件名（精简） | Sheet名 | 数据行 |
-|--------|---------------|---------|--------|
-| 深渊馈赠 | excel_abyssal_blessing_info | AbyssalBlessingInfo | 6 |
-| 攻击方式 | excel_attackmode_info | AttackModeInfo | 61 |
-| 音频信息 | excel_audio_info | AudioInfo | 39 |
-| 基础信息 | excel_base_info | BaseInfo | 3 |
-| Buff信息 | excel_buff_info | BuffInfo | 135 |
-| Buff前置 | excel_buff_pre_info | BuffPreInfo | 6 |
-| 议员对话 | excel_conversation_councilor_info | ConversationCouncilorInfo | 33 |
-| 生物属性类型 | excel_creature_attribute_type_info | CreatureAttributeTypeInfo | 12 |
-| 生物信息 | excel_creature_info | CreatureInfo | 115 |
-| 生物模型 | excel_creature_model | CreatureModel | 66 |
-| 生物模型详情 | excel_creature_model_info | CreatureModelInfo | 440 |
-| 生物随机 | excel_creature_random_info | CreatureRandomInfo | 28 |
-| 装备套装 | excel_equip_suit_info | EquipSuitInfo | 8 |
-| 终焉议会 | excel_doom_council_info | DoomCouncilInfo | 13 |
-| 议会议员等级 | excel_doom_council_ratings_info | DoomCouncilRatingsInfo | 12 |
-| 粒子效果 | excel_effect_info | EffectInfo | 21 |
-| 战斗场景 | excel_fight_scene | FightScene | 12 |
-| 战斗-征服 | excel_fight_type_conquer_info | FightTypeConquerInfo | 12 |
-| 游戏世界 | excel_game_world_info | GameWorldInfo | 6 |
-| 道具信息 | excel_items_info | ItemsInfo | 229 |
-| 道具类型 | excel_items_type | ItemsType | 10 |
-| 多语言 | excel_language | UIText(+17子表) | 152+ |
-| 等级信息 | excel_level_info | LevelInfo | 12 |
-| NPC信息 | excel_npc_info | NpcInfo | 181 |
-| NPC关系 | excel_npc_relationship_info | NpcRelationshipInfo | 7 |
-| 稀有度 | excel_rarity_info | RarityInfo | 8 |
-| 研究信息 | excel_research_info | ResearchInfo | 83 |
-| 骨骼动画枚举 | excel_spine_animation_state | SpineAnimationState | 33 |
-| 扭蛋机 | excel_store_gashaponmachine_info | StoreGashaponMachineInfo | 23 |
-| 称号 | excel_title_info | TitleInfo | 15 |
-| UI文本 | excel_ui_text | UIText | 152 |
-| 解锁信息 | excel_unlock_info | UnlockInfo | 108 |
+本项目配置表随业务逐步建立，**不内置固定清单**。用 `excel_schema.py` 现场查看任意表的 Sheet 列表与表头：
+
+```bash
+# 列出某 Excel 文件内所有 Sheet 及行列数
+python .claude/scripts/excel_schema.py --path "Assets/Data/Excel/<文件名>.xlsx"
+```
 
 ## 典型工作流
 
-### 工作流 A：新增一条配置（如新增 Buff 前置条件）
+### 工作流 A：新增一条配置（以某前置条件表为例）
 1. `excel_schema.py --sheet <SheetName> --sample 1` 查看列结构和样例值
 2. `excel_find.py` 检查目标 id 是否已存在
 3. `excel_add_row.py --set ... --backup` 新增
